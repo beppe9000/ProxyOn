@@ -1,0 +1,11 @@
+
+1>. Put your file (Zip / Apk/ Jar) that you want to sing in the root directory.
+
+2>. run ZIP Signer.bat
+
+3>. give the file name Only without any extension like (.zip / .jar /.apk).
+
+4>. Check Signed folder and get your file.
+
+-- bhavik9243 @ XDA
+-- Thank you.

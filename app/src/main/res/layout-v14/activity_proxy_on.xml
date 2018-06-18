@@ -13,38 +13,84 @@
                 android:focusableInTouchMode="true">
 
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Proxy Host "
-        android:id="@+id/pHost"/>
-
-    <EditText
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="number"
-        android:digits="1234567890."
-        android:id="@+id/txtHost"
-        />
+        android:orientation="horizontal"
+        android:visibility="gone">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Proxy Port"
-        android:id="@+id/pPort"/>
+        <TextView
+            android:id="@+id/pHost"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Proxy Host"
+            android:typeface="monospace" />
 
-    <EditText
+
+        <TextView
+            android:id="@+id/pPort"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:text="Proxy Port" />
+
+
+    </LinearLayout>
+
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="number"
-        android:id="@+id/txtPort"/>
+        android:orientation="horizontal">
 
-    <Switch
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Apply"
-        android:id="@+id/switch1"
-        android:checked="false"/>
+        <EditText
+            android:id="@+id/txtHost"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="HOST"
+            android:inputType="textNoSuggestions"
+            android:singleLine="false"
+            android:typeface="monospace" />
+
+        <EditText
+            android:id="@+id/txtPort"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:hint="PORT"
+            android:inputType="number"
+            android:singleLine="false" />
+
+    </LinearLayout>
+
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal"
+        android:weightSum="15" >
+
+        <Switch
+            android:id="@+id/switch2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="7"
+            android:text="RESOLVE DNS"
+            android:typeface="monospace" />
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="33dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+
+        <Switch
+            android:id="@+id/switch1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="7"
+            android:checked="false"
+            android:text="ENABLE PROXY"
+            android:typeface="monospace" />
+
+    </LinearLayout>
 
     <ExpandableListView
         android:layout_width="match_parent"

@@ -16,6 +16,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -26,6 +28,7 @@ public class ProxyOnActivity extends ActionBarActivity {
     private TextView txtHost;
     private TextView txtPort;
     private Switch mSwitch;
+    private Switch dnsSwitch;
     private ArrayList<PackageDInfo> mApps;
     private ExpandableListView mExpandableList;
     private List<String> mListDataHeader;
@@ -39,6 +42,7 @@ public class ProxyOnActivity extends ActionBarActivity {
         txtHost = (TextView) findViewById(R.id.txtHost);
         txtPort = (TextView) findViewById(R.id.txtPort);
         mSwitch = (Switch) findViewById(R.id.switch1);
+        dnsSwitch = (Switch) findViewById(R.id.switch2);
         mExpandableList = (ExpandableListView) findViewById(R.id.expandableListView);
 
         txtHost.addTextChangedListener(textWatchaer);
@@ -48,10 +52,12 @@ public class ProxyOnActivity extends ActionBarActivity {
         String host = mPrefs.getString("host", "");
         String port = mPrefs.getString("port", "");
         Boolean sw = mPrefs.getBoolean("switch", false);
+        Boolean swDns = mPrefs.getBoolean("useDNS", false);
 
         txtHost.setText(host);
         txtPort.setText(port);
         mSwitch.setChecked(sw);
+        dnsSwitch.setChecked(swDns);
 
         loadListView();
 
@@ -73,6 +79,7 @@ public class ProxyOnActivity extends ActionBarActivity {
                         edit.putString("host", host);
                         edit.putString("port", port);
                         edit.putBoolean("switch", true);
+                        edit.putBoolean("useDNS", dnsSwitch.isChecked());
                         edit.commit();
 
                         Toast.makeText(getApplicationContext(), "ON!", Toast.LENGTH_LONG).show();
@@ -145,6 +152,7 @@ public class ProxyOnActivity extends ActionBarActivity {
         txtHost.setText("");
         txtPort.setText("");
         mSwitch.setChecked(false);
+        dnsSwitch.setChecked(false);
         loadListView();
 
         Toast.makeText(getApplicationContext(), "Clear!", Toast.LENGTH_SHORT).show();
@@ -160,6 +168,16 @@ public class ProxyOnActivity extends ActionBarActivity {
     private ArrayList<PackageDInfo> getInstalledApps() {
         ArrayList<PackageDInfo> appsList = new ArrayList<>();
         List<PackageInfo> packs = getPackageManager().getInstalledPackages(0);
+
+        Comparator<PackageInfo> pack_comp = new Comparator<PackageInfo>() {
+            @Override public int compare(PackageInfo p1, PackageInfo p2) {
+                String n1 = p1.applicationInfo.loadLabel(getPackageManager()).toString().toLowerCase();
+                String n2 = p2.applicationInfo.loadLabel(getPackageManager()).toString().toLowerCase();
+                return n1.compareTo(n2);
+            }
+        };
+
+        Collections.sort(packs,pack_comp);
 
         for (int i = 0; i < packs.size(); i++) {
 
@@ -181,6 +199,12 @@ public class ProxyOnActivity extends ActionBarActivity {
                 appsList.add(pInfo);
             }
         }
+
+
+
+
+
+
         return appsList;
     }
 
@@ -193,9 +217,7 @@ public class ProxyOnActivity extends ActionBarActivity {
         List<PackageDInfo> applications = new ArrayList<PackageDInfo>();
 
         mApps = getInstalledApps();
-        for (int i = 0; i < mApps.size(); i++) {
-            applications.add(mApps.get(i));
-        }
+        applications.addAll(mApps); //for each before
 
         ExpandableListView appList = (ExpandableListView) findViewById(R.id.expandableListView);
 

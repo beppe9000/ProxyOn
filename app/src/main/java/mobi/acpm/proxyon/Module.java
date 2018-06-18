@@ -1,5 +1,6 @@
 package mobi.acpm.proxyon;
 
+import java.net.InetAddress;
 import java.net.URI;
 
 import de.robv.android.xposed.IXposedHookLoadPackage;
@@ -29,22 +30,36 @@ public class Module implements IXposedHookLoadPackage {
 
         findAndHookMethod("java.net.ProxySelectorImpl", loadPackageParam.classLoader, "select", URI.class, new XC_MethodHook() {
 
+            @SuppressWarnings("ConstantConditions")
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
 
                 if(sPrefs.getBoolean("switch", false)) {
 
-                    System.setProperty("proxyHost", sPrefs.getString("host", null));
-                    System.setProperty("proxyPort", sPrefs.getString("port", null));
+                    String overrideHost = sPrefs.getString("host", null);
+                    String overridePort = sPrefs.getString("port", null);
 
-                    System.setProperty("http.proxyHost", sPrefs.getString("host", null));
-                    System.setProperty("http.proxyPort", sPrefs.getString("port", null));
+                    if (sPrefs.getBoolean("useDNS", false)) {
+                        //resolve Host and override overrideHost
 
-                    System.setProperty("https.proxyHost", sPrefs.getString("host", null));
-                    System.setProperty("https.proxyPort", sPrefs.getString("port", null));
+                        try {
+                            overrideHost = InetAddress.getByName(overrideHost).getHostAddress();
+                        } catch (Exception ex) {
+                            //no fucks given
+                        }
+                    }
 
-                    System.setProperty("socksProxyHost", sPrefs.getString("host", null));
-                    System.setProperty("socksProxyPort", sPrefs.getString("port", null));
+                    System.setProperty("proxyHost", overrideHost);
+                    System.setProperty("proxyPort", overridePort);
+
+                    System.setProperty("http.proxyHost", overrideHost);
+                    System.setProperty("http.proxyPort", overridePort);
+
+                    System.setProperty("https.proxyHost", overrideHost);
+                    System.setProperty("https.proxyPort", overridePort);
+
+                    System.setProperty("socksProxyHost", overrideHost);
+                    System.setProperty("socksProxyPort", overridePort);
                 }
             }
         });
